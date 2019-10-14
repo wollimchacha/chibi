@@ -1,7 +1,7 @@
 class Q(object):
         def __init__(self,a,b):
             self.a = a
-            self.b = b
+            self.b = b ＃self自分を指す（ｑ１）
         def __repr__(self):
             if self.b == 1:
                     return str(self.a)

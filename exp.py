@@ -118,5 +118,8 @@ e = Add(1,Add(1, 2))
 print(e.eval())
 assert e.eval() == 4
 
+def __repr__(self):
+    classname = self.__name__
+    return f'{classname}({self.left},{self.right})'
 print()
 print()

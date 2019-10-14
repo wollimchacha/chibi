@@ -93,13 +93,30 @@ class Add(Expr):
     def eval(self):
         return self.left.eval() + self.right.eval()
 
-e = Add(Val(1), Val(2))
+e = Add(Val(1),Val(2))
 print(e.eval())
 assert e.eval() == 3
 
 assert isinstance(v, Expr)
 assert isinstance(v, Val)
 assert  not isinstance(v, int)
+
+def toExpr(a):
+    if not isinstance(a, Expr):
+        a = Val(a)
+    return a
+
+class Add(Expr):
+    __slots__ = ['left', 'right']
+    def __init__(self, a, b):
+        self.left = toExpr(a)
+        self.right = toExpr(b)
+    def eval(self):
+        return self.left.eval() + self.right.eval()
+
+e = Add(1,Add(1, 2))
+print(e.eval())
+assert e.eval() == 4
 
 print()
 print()

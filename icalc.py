@@ -1,12 +1,29 @@
 import pegpy
-peg = pegpy.grammar('''
-Expression = Product (^{ '+' Product #Add })*
-Product = Value (^{ '*' Value #Mul })*
-Value = { [0-9]+ #Int }
-''')
+peg = pegpy.grammar('chibi.tpeg')
 parser = pegpy.generate(peg)
-t = parser('1+2*3')
-print(repr(t))
+
+class Expr(object):
+    @classmethod
+    def new(cls, v):
+        if isinstance(v, Expr):
+            return v
+        return Val(v)
+
+class Val(Expr):
+    __slot__=['value']
+
+    def__init__(self,value):
+        self.value=value
+
+    def__repr__(self):
+        return f'Val({self.value})'
+
+    def eval(self, env: dict):
+        return self.value
+
+
+#t = parser('1+2*3')
+#print(repr(t))
 
 def calc(t):
     if t == 'Int':

@@ -38,3 +38,49 @@ class Add(Binary):
     __slot__ = ['left', 'right']
     def eval(self, env: dict):
         return self.left.eval(env) + self.right.eval(env)
+
+class Sub(Binary):
+    __slot__ = ['left', 'right']
+    def eval(self, env: dict):
+        return self.left.eval(env) - self.right.eval(env)
+class Mul(Binary):
+    __slot__ = ['left', 'right']
+    def eval(self, env: dict):
+        return self.left.eval(env) * self.right.eval(env)
+class Div(Binary):
+    __slot__ = ['left', 'right']
+    def eval(self, env: dict):
+        return self.left.eval(env) // self.right.eval(env)
+class Mod(Binary):
+    __slot__ = ['left', 'right']
+    def eval(self, env: dict):
+        return self.left.eval(env) % self.right.eval(env)
+
+def conv(tree):
+    if tree == 'Block':
+        return conv(tree[0])
+    if tree == 'Val' or tree == 'Int':
+        return Val(int(str(tree)))
+    if tree == 'Add':
+        return Add(conv(tree[0]), conv(tree[1]))
+    print('@TODO', tree.tag)
+    return Val(str(tree))
+def run(src: str):
+    tree = parser(src)
+    if tree.isError():
+        print(repr(tree))
+    else:
+        e = conv(tree)
+        print(repr(e))
+        print(e.eval({}))
+def main():
+    try:
+        while True:
+            s = input('>>> ')
+            if s == '':
+                break
+            run(s)
+    except EOFError:
+        return
+if __name__ == '__main__':
+    main()

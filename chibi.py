@@ -90,7 +90,10 @@ if __name__ == '__main__':
 e=Mul(Val(1), Val(2))
 assert e.eval({}) == 2
 
-
+class Add(Binary):
+    __slot__ = ['left', 'right']
+    def eval(self, env: dict):
+        return self.left.eval(env) + self.right.eval(env)
 
 
 

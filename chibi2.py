@@ -33,3 +33,8 @@ class Binary(Expr):
     def __repr__(self):
         classname = self.__class__.__name__
         return f'{classname}({self.left},{self.right})'
+
+class Add(Binary):
+    __slot__ = ['left', 'right']
+    def eval(self, env: dict):
+        return self.left.eval(env) + self.right.eval(env)

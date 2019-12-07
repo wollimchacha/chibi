@@ -1,6 +1,10 @@
 import pegpy
 peg = pegpy.grammar('chibi.tpeg')
 parser = pegpy.generate(peg)
+tree = parser('1+2*3')
+print(repr(tree))
+tree = parser('1@2*3')
+print(repr(tree))
 
 class Expr(object):
     @classmethod
@@ -83,7 +87,8 @@ def main():
 if __name__ == '__main__':
     main()
 
-
+e=Mul(Val(1), Val(2))
+assert e.eval({}) == 2
 
 
 

@@ -13,3 +13,23 @@ class Expr(object):
         if isinstance(v, Expr):
             return v
         return Val(v)
+
+class Val(Expr):
+    __slot__ = ['value']
+    def __init__(self, value):
+        self.value = value
+    def __repr__(self):
+        return f'Val({self.value})'
+    def eval(self, env: dict):
+        return self.value
+
+e = Val(0)
+assert e.eval({}) == 0
+class Binary(Expr):
+    __slot__ = ['left', 'right']
+    def __init__(self, left, right):
+        self.left = Expr.new(left)
+        self.right = Expr.new(right)
+    def __repr__(self):
+        classname = self.__class__.__name__
+        return f'{classname}({self.left},{self.right})'

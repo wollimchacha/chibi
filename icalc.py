@@ -8,10 +8,9 @@ class Expr(object):
         if isinstance(v, Expr):
             return v
         return Val(v)
-
+        
 class Val(Expr):
     __slot__=['value']
-
     def__init__(self,value):
         self.value=value
 

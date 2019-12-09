@@ -52,6 +52,22 @@ class Mod(Binary):
     __slots__ = ['left', 'right']
     def eval(self, env: dict):
         return self.left.eval(env) % self.right.eval(env)
+
+class Eq(Binary):#left=light
+    __slots__ = ['left', 'right']
+    def eval(self, env: dict):#cond ? x : y
+        return 1  if self.left.eval(env) == self.right.eval(env) else 0
+
+class Ne(Binary):#left!=light
+    __slots__ = ['left', 'right']
+    def eval(self, env: dict):#cond ? x : y
+        return 1 if self.left.eval(env) != self.right.eval(env) else 0
+
+class Lt(Binary):#left!=light
+    __slots__ = ['left', 'right']
+    def eval(self, env: dict):#cond ? x : y
+        return 1 if self.left.eval(env) < self.right.eval(env) else 0
+
 class Var(Expr):
     __slots__ = ['name']
     def __init__(self, name):
@@ -81,6 +97,8 @@ def conv(tree):
         return Mul(conv(tree[0]), conv(tree[1]))
     if tree == 'Div':
         return Div(conv(tree[0]), conv(tree[1]))
+    if tree == 'Mod':
+        return Mod(conv(tree[0]), conv(tree[1]))
     if tree == 'Mod':
         return Mod(conv(tree[0]), conv(tree[1]))
     if tree == 'Var':

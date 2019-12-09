@@ -84,6 +84,15 @@ class Assign(Expr):
     def eval(self, env):
         env[self.name] = self.e.eval(env)
         return env[self.name]
+
+class if(Expr):
+    __slots__=['cond', 'then','else']
+    def __init__(cond, then, else_):
+        self.cond=cond
+        self.then=then
+        self.else=else_
+    def eval(self, env):
+
 def conv(tree):
     if tree == 'Block':
         return conv(tree[0])
@@ -99,8 +108,12 @@ def conv(tree):
         return Div(conv(tree[0]), conv(tree[1]))
     if tree == 'Mod':
         return Mod(conv(tree[0]), conv(tree[1]))
-    if tree == 'Mod':
-        return Mod(conv(tree[0]), conv(tree[1]))
+    if tree == 'Eq':
+        return Eq(conv(tree[0]), conv(tree[1]))
+    if tree == 'Ne':
+        return Ne(conv(tree[0]), conv(tree[1]))
+    if tree == 'Lt':
+        return Lt(conv(tree[0]), conv(tree[1]))
     if tree == 'Var':
         return Var(str(tree))
     if tree == 'LetDecl':

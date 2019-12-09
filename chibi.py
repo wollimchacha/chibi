@@ -92,7 +92,7 @@ class Block(Expr):
     def eval(self, env):
         for e in self.exprs:
             e.eval(env)
-#Block(e, e2, e3, e3)
+
 
 class While(Expr):
     __slots__=['cond', 'body']
@@ -114,6 +114,13 @@ class If(Expr):
             return self.then.eval(env)
         else:
             return self.else_.eval(env)
+
+e=Block(
+    Assign('x', Val(1)),
+    Assign('y', Val(2)),
+    If(Gt(Var('x'), Val('y')), Var('x'), Var('y'))
+)
+assert e.eval ({}) == 2
 
 def conv(tree):
     if tree == 'Block':

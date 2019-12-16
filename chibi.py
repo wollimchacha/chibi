@@ -52,26 +52,30 @@ class Mod(Binary):
     __slots__ = ['left', 'right']
     def eval(self, env: dict):
         return self.left.eval(env) % self.right.eval(env)
-
-class Eq(Binary):#left=light
+class Eq(Binary): # left == right
     __slots__ = ['left', 'right']
-    def eval(self, env: dict):#cond ? x : y
-        return 1  if self.left.eval(env) == self.right.eval(env) else 0
-
-class Ne(Binary):#left!=light
+    def eval(self, env: dict):   # cond ? x : y
+        return 1 if self.left.eval(env) == self.right.eval(env) else 0
+class Ne(Binary): # left != right
     __slots__ = ['left', 'right']
-    def eval(self, env: dict):#cond ? x : y
+    def eval(self, env: dict):   # cond ? x : y
         return 1 if self.left.eval(env) != self.right.eval(env) else 0
-
-class Lt(Binary):#left!=light
+class Lt(Binary): # left != right
     __slots__ = ['left', 'right']
-    def eval(self, env: dict):#cond ? x : y
+    def eval(self, env: dict):   # cond ? x : y
         return 1 if self.left.eval(env) < self.right.eval(env) else 0
-class Gt(Binary):#left!=light
+class Lte(Binary): # left != right
     __slots__ = ['left', 'right']
-    def eval(self, env: dict):#cond ? x : y
+    def eval(self, env: dict):   # cond ? x : y
+        return 1 if self.left.eval(env) <= self.right.eval(env) else 0
+class Gt(Binary): # left != right
+    __slots__ = ['left', 'right']
+    def eval(self, env: dict):   # cond ? x : y
         return 1 if self.left.eval(env) > self.right.eval(env) else 0
-
+class Gte(Binary): # left != right
+    __slots__ = ['left', 'right']
+    def eval(self, env: dict):   # cond ? x : y
+        return 1 if self.left.eval(env) >= self.right.eval(env) else 0
 class Var(Expr):
     __slots__ = ['name']
     def __init__(self, name):
@@ -88,43 +92,52 @@ class Assign(Expr):
     def eval(self, env):
         env[self.name] = self.e.eval(env)
         return env[self.name]
-
 class Block(Expr):
-    __slots__=['exprs']
-    def __init__(self, exprs):
-        self.exprs=expers
+    __slots__ = ['exprs']
+    def __init__(self, *exprs): # 可変長個の引数
+        self.exprs = exprs  # [e, e2, e3, e4, e5] リストになっている
     def eval(self, env):
         for e in self.exprs:
             e.eval(env)
-
-
 class While(Expr):
-    __slots__=['cond', 'body']
-    def __init__(self, cond,body):
-        self.cond=cond
-        self.body=body
+    __slots__ = ['cond', 'body']
+    def __init__(self, cond, body):
+        self.cond = cond
+        self.body = body
     def eval(self, env):
-        while self.cond.eval(env) !=0:
+        while self.cond.eval(env) != 0:
             self.body.eval(env)
 class If(Expr):
-    __slots__=['cond', 'then','else']
-    def __init__(self, cond, then, else_):
-        self.cond=cond
-        self.then=then
-        self.else_=else_
+    __slots__ = ['cond', 'then', 'else_']
+    def __init__(self, cond, then, else_ ):
+        self.cond = cond
+        self.then = then
+        self.else_ = else_
     def eval(self, env):
         yesorno = self.cond.eval(env)
         if yesorno == 1:
             return self.then.eval(env)
         else:
             return self.else_.eval(env)
+class lambda(Expr):
+    __slots__=['name', 'body', ]
+    def __init__(self, name, body):
+        self.name=name
+        self.body=body
 
-e=Block(
-    Assign('x', Val(1)),
-    Assign('y', Val(2)),
-    If(Gt(Var('x'), Val('y'), Var('x'), Var('y'))
-)
-assert e.eval({}) == 2
+    def __reper__(self):
+        return f'λ{self.name}.{str(self.body)}'
+    def eval(self, env)
+        pass
+
+f = Lambda('x', Add(Var('x'), 1))   #λx . x+1
+print(reper(f))
+
+class FuncApp(Expr):
+    __slots__=['func', 'param']
+    def__init__(self, func:Lambda, param):
+
+
 
 def conv(tree):
     if tree == 'Block':
@@ -151,8 +164,12 @@ def conv(tree):
         return Ne(conv(tree[0]), conv(tree[1]))
     if tree == 'Lt':
         return Lt(conv(tree[0]), conv(tree[1]))
+    if tree == 'Lte':
+        return Lte(conv(tree[0]), conv(tree[1]))
     if tree == 'Gt':
         return Gt(conv(tree[0]), conv(tree[1]))
+    if tree == 'Gte':
+        return Gte(conv(tree[0]), conv(tree[1]))
     if tree == 'Var':
         return Var(str(tree))
     if tree == 'LetDecl':
@@ -165,7 +182,7 @@ def run(src: str, env: dict):
         print(repr(tree))
     else:
         e = conv(tree)
-        print('env', env)
+        #print('env', env)
         print(e.eval(env))
 def main():
     try:

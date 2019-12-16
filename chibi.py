@@ -122,9 +122,9 @@ class If(Expr):
 e=Block(
     Assign('x', Val(1)),
     Assign('y', Val(2)),
-    If(Gt(Var('x'), Val('y')), Var('x'), Var('y'))
+    If(Gt(Var('x'), Val('y'), Var('x'), Var('y'))
 )
-assert e.eval ({}) == 2
+assert e.eval({}) == 2
 
 def conv(tree):
     if tree == 'Block':
